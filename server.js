@@ -46,6 +46,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   };
 
   user.exercises.push(exercise);
+  console.log(user);
   res.json(user);
 });
 
