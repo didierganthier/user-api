@@ -50,10 +50,6 @@ app.post('/api/users/:_id/exercises', (req, res) => {
         date: date ? new Date(date) : new Date(), // Ensure date is a string 
     };
 
-    users.forEach((user) => {
-        user.exercises = [];
-    })
-
     user.exercises.push(exercise);
 
     res.json(user);
