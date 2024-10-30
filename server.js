@@ -20,6 +20,7 @@ app.post('/api/users', (req, res) => {
   const user = {
     _id: uuidv4(),
     username,
+    exercises: [], // Initialize exercises array
   };
   users.push(user);
   res.json(user);
