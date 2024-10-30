@@ -36,7 +36,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
     const exercise = {
         description,
         duration: parseInt(duration),
-        date: date ? new Date(date).toDateString() : new Date().toDateString() // Ensure date is a string 
+        date: date ? new Date(date) : new Date(), // Ensure date is a string 
     };
 
     user.exercises.push(exercise);
