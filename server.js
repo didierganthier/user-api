@@ -14,10 +14,21 @@ let users = [];
 
 app.post('/api/users', (req, res) => {
     const { username } = req.body;
-    const newUser = { username: 'didierganthier' }
-    users.push(newUser);
-    res.json(newUser);
-})
+    
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required' });
+    }
+
+    const user = {
+        _id: uuidv4(),
+        username,
+        exercises: [],
+    };
+
+    users.push(user);
+
+    res.json(user);
+});
 
 app.get('/api/users', (req, res) => {
     res.json(users);
