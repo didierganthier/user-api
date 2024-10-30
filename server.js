@@ -14,7 +14,7 @@ let users = [];
 
 app.post('/api/users', (req, res) => {
     const { username } = req.body;
-    const newUser = { username, _id: uuidv4() }
+    const newUser = { username: username, _id: uuidv4() }
     users.push(newUser);
     res.json(newUser);
 })
@@ -38,6 +38,10 @@ app.post('/api/users/:_id/exercises', (req, res) => {
         duration: parseInt(duration),
         date: date ? new Date(date) : new Date(), // Ensure date is a string 
     };
+
+    users.forEach((user) => {
+        user.exercises = [];
+    })
 
     user.exercises.push(exercise);
 
