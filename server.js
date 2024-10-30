@@ -28,7 +28,7 @@ app.post('/api/users', (req, res) => {
     users.push(user);
 
     res.json(user);
-});
+})
 
 app.get('/api/users', (req, res) => {
     res.json(users);
@@ -49,6 +49,10 @@ app.post('/api/users/:_id/exercises', (req, res) => {
         duration: parseInt(duration),
         date: date ? new Date(date) : new Date(), // Ensure date is a string 
     };
+
+    // users.forEach((user) => {
+    //     user.exercises = [];
+    // })
 
     user.exercises.push(exercise);
 
