@@ -14,7 +14,7 @@ let users = [];
 
 app.post('/api/users', (req, res) => {
     const { username } = req.body;
-    const newUser = { username, _id: uuidv4(), exercises: [] }
+    const newUser = { username, _id: uuidv4() }
     users.push(newUser);
     res.json(newUser);
 })
