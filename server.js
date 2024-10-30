@@ -27,22 +27,22 @@ app.post('/api/users/:_id/exercises', (req, res) => {
     const { _id } = req.params;
     const { description, duration, date } = req.body;
 
-    const user = users.find((user) => user._id === _id);
+    const user = users.find(user => user._id === _id);
 
     if (!user) {
-        return res.status(404).json({ error: "User not found" });
+        return res.status(404).json({ error: 'User not found' });
     }
 
     const exercise = {
         description,
         duration: parseInt(duration),
-        date: date ? new Date(date).toDateString() : new Date().toDateString(),
+        date: date ? new Date(date).toDateString() : new Date().toDateString() // Ensure date is a string 
     };
 
     user.exercises.push(exercise);
 
     res.json(user);
-})
+});
 
 app.get('/api/users/:_id/logs', (req, res) => {
     const { _id } = req.params;
@@ -55,25 +55,25 @@ app.get('/api/users/:_id/logs', (req, res) => {
     }
 
     let log = user.exercises; // Filter logs based on 'from' and 'to' dates 
-    
-    if (from) { const fromDate = new Date(from); log = log.filter(exercise => new Date(exercise.date) >= fromDate); } 
-    
-    if (to) { const toDate = new Date(to); log = log.filter(exercise => new Date(exercise.date) <= toDate); } 
+
+    if (from) { const fromDate = new Date(from); log = log.filter(exercise => new Date(exercise.date) >= fromDate); }
+
+    if (to) { const toDate = new Date(to); log = log.filter(exercise => new Date(exercise.date) <= toDate); }
     // Limit the number of logs 
     if (limit) { log = log.slice(0, parseInt(limit)); }
 
     // Ensure the log entries have the correct formats 
-    log = log.map(exercise => ({ 
-        description: exercise.description, 
-        duration: exercise.duration, 
-        date: exercise.date.toDateString() 
+    log = log.map(exercise => ({
+        description: exercise.description,
+        duration: exercise.duration,
+        date: exercise.date.toDateString()
     }));
 
-    res.json({ 
-        _id: user._id, 
-        username: user.username, 
-        count: log.length, 
-        log: log, 
+    res.json({
+        _id: user._id,
+        username: user.username,
+        count: log.length,
+        log: log,
     });
 })
 
