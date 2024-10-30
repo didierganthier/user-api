@@ -13,85 +13,84 @@ app.use(bodyParser.json());
 let users = [];
 
 app.post('/api/users', (req, res) => {
-    const { username } = req.body;
-    
-    if (!username) {
-        return res.status(400).json({ error: 'Username is required' });
-    }
-
-    const user = {
-        _id: uuidv4(),
-        username,
-        // exercises: [],
-    };
-
-    users.push(user);
-
-    res.json(user);
-})
+  const { username } = req.body;
+  if (!username) {
+    return res.status(400).json({ error: 'Username is required' });
+  }
+  const user = {
+    _id: uuidv4(),
+    username,
+    exercises: [], // Initialize exercises array
+  };
+  users.push(user);
+  res.json(user);
+});
 
 app.get('/api/users', (req, res) => {
-    res.json(users);
-})
+  res.json(users);
+});
 
 app.post('/api/users/:_id/exercises', (req, res) => {
-    const { _id } = req.params;
-    const { description, duration, date } = req.body;
+  const { _id } = req.params;
+  const { description, duration, date } = req.body;
+  const user = users.find(user => user._id === _id);
 
-    const user = users.find(user => user._id === _id);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
 
-    if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-    }
+  const exercise = {
+    description,
+    duration: parseInt(duration),
+    date: date ? new Date(date).toDateString() : new Date().toDateString(), // Ensure date is a string
+  };
 
-    const exercise = {
-        description,
-        duration: parseInt(duration),
-        date: date ? new Date(date) : new Date(), // Ensure date is a string 
-    };
-
-    // users.forEach((user) => {
-    //     user.exercises = [];
-    // })
-
-    user.exercises.push(exercise);
-
-    res.json(user);
+  user.exercises.push(exercise);
+  res.json(user);
 });
 
 app.get('/api/users/:_id/logs', (req, res) => {
-    const { _id } = req.params;
-    const { from, to, limit } = req.query;
+  const { _id } = req.params;
+  const { from, to, limit } = req.query;
+  const user = users.find((user) => user._id === _id);
 
-    const user = users.find((user) => user._id === _id);
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
 
-    if (!user) {
-        return res.status(404).json({ error: "User not found" });
-    }
+  let log = user.exercises;
 
-    let log = user.exercises; // Filter logs based on 'from' and 'to' dates 
+  // Filter logs based on 'from' and 'to' dates
+  if (from) {
+    const fromDate = new Date(from);
+    log = log.filter(exercise => new Date(exercise.date) >= fromDate);
+  }
 
-    if (from) { const fromDate = new Date(from); log = log.filter(exercise => new Date(exercise.date) >= fromDate); }
+  if (to) {
+    const toDate = new Date(to);
+    log = log.filter(exercise => new Date(exercise.date) <= toDate);
+  }
 
-    if (to) { const toDate = new Date(to); log = log.filter(exercise => new Date(exercise.date) <= toDate); }
-    // Limit the number of logs 
-    if (limit) { log = log.slice(0, parseInt(limit)); }
+  // Limit the number of logs
+  if (limit) {
+    log = log.slice(0, parseInt(limit));
+  }
 
-    // Ensure the log entries have the correct formats 
-    log = log.map(exercise => ({
-        description: exercise.description,
-        duration: exercise.duration,
-        date: exercise.date.toDateString()
-    }));
+  // Ensure the log entries have the correct formats
+  log = log.map(exercise => ({
+    description: exercise.description,
+    duration: exercise.duration,
+    date: exercise.date
+  }));
 
-    res.json({
-        _id: user._id,
-        username: user.username,
-        count: log.length,
-        log: log,
-    });
-})
+  res.json({
+    _id: user._id,
+    username: user.username,
+    count: log.length,
+    log: log
+  });
+});
 
 app.listen(PORT, () => {
-    console.log(`Server is listening on PORT ${PORT}`)
-})
+  console.log(`Server is listening on PORT ${PORT}`);
+});
