@@ -22,7 +22,7 @@ app.post('/api/users', (req, res) => {
     const user = {
         _id: uuidv4(),
         username,
-        exercises: [],
+        // exercises: [],
     };
 
     users.push(user);
@@ -50,9 +50,9 @@ app.post('/api/users/:_id/exercises', (req, res) => {
         date: date ? new Date(date) : new Date(), // Ensure date is a string 
     };
 
-    // users.forEach((user) => {
-    //     user.exercises = [];
-    // })
+    users.forEach((user) => {
+        user.exercises = [];
+    })
 
     user.exercises.push(exercise);
 
